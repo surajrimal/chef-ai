@@ -38,15 +38,14 @@ npm install
 Create a `.env` file in the project root.
 
 ```env
-VITE_HF_ACCESS_TOKEN=your_hugging_face_token
-VITE_ANTHROPIC_API_KEY=your_anthropic_api_key
+HF_ACCESS_TOKEN=your_hugging_face_token
 ```
 
 Notes:
 
-- The current UI flow uses `VITE_HF_ACCESS_TOKEN`.
-- `VITE_ANTHROPIC_API_KEY` is only needed if you switch the app back to the Anthropic helper in [`src/ai.js`](/Users/suraj/CCI/suraj-chef/src/ai.js).
-- Because this is a client-side app, any key exposed here is available in the browser. For a real deployment, move API calls behind a backend or serverless function.
+- `HF_ACCESS_TOKEN` is read only by the Vercel serverless function in [`api/recipe.js`](/Users/suraj/CCI/suraj-chef/api/recipe.js).
+- Do not prefix private secrets with `VITE_`; Vite injects those into the browser bundle.
+- For Vercel, add `HF_ACCESS_TOKEN` in Project Settings -> Environment Variables instead of committing it to the repo.
 
 ### Run Locally
 
@@ -54,7 +53,7 @@ Notes:
 npm run dev
 ```
 
-Open the local Vite URL shown in the terminal, usually `http://localhost:5173`.
+For local frontend-only work, that starts the Vite app. To exercise the serverless endpoint locally, run the project through Vercel dev so `/api/recipe` is available with your environment variables.
 
 ## Available Scripts
 
@@ -72,7 +71,9 @@ src/
   App.jsx                  App shell
   Header.jsx               Top header
   Main.jsx                 Main app state and actions
-  ai.js                    LLM request helpers
+  ai.js                    Browser helper that calls the serverless API
+api/
+  recipe.js                Vercel serverless function for LLM requests
   components/
     IngredientsList.jsx    Ingredient list and recipe trigger
     ClaudeRecipe.jsx       Recipe rendering
@@ -82,8 +83,8 @@ src/
 
 1. The user adds ingredients in the main form.
 2. Once the list is large enough, the app shows a recipe generation button.
-3. The app sends the ingredient list to the model in [`src/ai.js`](/Users/suraj/CCI/suraj-chef/src/ai.js).
-4. The model returns markdown content.
+3. The app posts the ingredient list to [`api/recipe.js`](/Users/suraj/CCI/suraj-chef/api/recipe.js).
+4. The serverless function calls the model with `HF_ACCESS_TOKEN`.
 5. The app renders that markdown in [`src/components/ClaudeRecipe.jsx`](/Users/suraj/CCI/suraj-chef/src/components/ClaudeRecipe.jsx).
 
 The current Hugging Face request logic also checks whether the response ended because of token length and asks the model to continue if needed.
@@ -100,7 +101,6 @@ Vite currently reports a large bundle warning during build. That warning does no
 
 ## Future Improvements
 
-- Move API calls to a backend to avoid exposing tokens
 - Add ingredient validation and duplicate handling
 - Let users choose recipe style or cuisine
 - Save recent recipes locally

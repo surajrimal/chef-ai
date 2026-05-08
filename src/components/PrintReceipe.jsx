@@ -55,12 +55,6 @@ function getPrintRecipeMarkup({ date, ingredients, recipeHtml }) {
                 <p class="meta">Saved on ${date}</p>
 
                 <section class="section">
-                    <h2>Your ingredients and instructions</h2>
-                    <ul>${ingredientsMarkup}</ul>
-                </section>
-
-                <section class="section">
-                    <h2>Recommended recipe</h2>
                     ${recipeHtml}
                 </section>
             </body>

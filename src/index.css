@@ -42,10 +42,24 @@ body {
     object-fit: contain;
 }
 
+.site-header-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
 .site-header h1 {
     margin: 0;
     font-size: 2rem;
     font-weight: 600;
+}
+
+.site-header-copy p {
+    margin: 0;
+    max-width: 40rem;
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height: 1.45;
 }
 
 main {
@@ -523,17 +537,26 @@ ul.ingredients-list > li {
     }
 
     .site-header-image {
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
         padding: 4px;
         border-radius: 14px;
         background: rgba(255, 250, 244, 0.78);
         box-shadow: 0 10px 18px rgba(94, 66, 43, 0.08);
     }
 
+    .site-header-copy {
+        gap: 4px;
+    }
+
     .site-header h1 {
         font-size: 1.4rem;
         line-height: 1.05;
+    }
+
+    .site-header-copy p {
+        font-size: 0.88rem;
+        line-height: 1.4;
     }
 
     main {
@@ -711,6 +734,10 @@ ul.ingredients-list > li {
 
     .site-header h1 {
         font-size: 1.28rem;
+    }
+
+    .site-header-copy p {
+        font-size: 0.84rem;
     }
 
     main {

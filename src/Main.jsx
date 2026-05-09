@@ -148,6 +148,54 @@ export default function Main() {
         )
     }
 
+    function updateIngredient(indexToUpdate, nextValue) {
+        if (typeof nextValue !== "string") {
+            setIngredientMessageType("error")
+            setIngredientMessage("Please enter at least one valid ingredient or instruction.")
+            return false
+        }
+
+        const normalizedValue = normalizeIngredient(nextValue)
+
+        if (!normalizedValue) {
+            setIngredientMessageType("error")
+            setIngredientMessage("Please enter at least one valid ingredient or instruction.")
+            return false
+        }
+
+        if (!isValidIngredient(normalizedValue)) {
+            setIngredientMessageType("error")
+            setIngredientMessage(`"${normalizedValue}" is not a valid entry. Use words, numbers, and simple cooking punctuation only.`)
+            return false
+        }
+
+        const nextKey = getIngredientKey(normalizedValue)
+        const duplicateExists = ingredients.some((ingredient, index) =>
+            index !== indexToUpdate && getIngredientKey(ingredient) === nextKey
+        )
+
+        if (duplicateExists) {
+            setIngredientMessageType("error")
+            setIngredientMessage("That item is already in your list.")
+            return false
+        }
+
+        if (getIngredientKey(ingredients[indexToUpdate] ?? "") === nextKey) {
+            setIngredientMessageType("info")
+            setIngredientMessage("No changes made.")
+            return true
+        }
+
+        setIngredients(prevIngredients =>
+            prevIngredients.map((ingredient, index) =>
+                index === indexToUpdate ? normalizedValue : ingredient
+            )
+        )
+        setIngredientMessageType("success")
+        setIngredientMessage("Item updated.")
+        return true
+    }
+
     function removeAllIngredients() {
         setIngredients([])
         setRecipe("")
@@ -174,6 +222,7 @@ export default function Main() {
                     <aside className="recipe-layout-sidebar">
                         <IngredientsList
                             ingredients={ingredients}
+                            onUpdateIngredient={updateIngredient}
                             onRemoveIngredient={removeIngredient}
                             onRemoveAllIngredients={removeAllIngredients}
                             getRecipe={getRecipe}
@@ -195,6 +244,7 @@ export default function Main() {
                 ingredients.length > 0 &&
                 <IngredientsList
                     ingredients={ingredients}
+                    onUpdateIngredient={updateIngredient}
                     onRemoveIngredient={removeIngredient}
                     onRemoveAllIngredients={removeAllIngredients}
                     getRecipe={getRecipe}

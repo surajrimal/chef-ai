@@ -1,7 +1,62 @@
+import React from "react"
+
 export default function IngredientsList(props) {
+    const [editingIndex, setEditingIndex] = React.useState(null)
+    const [editingValue, setEditingValue] = React.useState("")
+
+    function startEditing(index, ingredient) {
+        setEditingIndex(index)
+        setEditingValue(ingredient)
+    }
+
+    function stopEditing() {
+        setEditingIndex(null)
+        setEditingValue("")
+    }
+
+    function saveEditing() {
+        if (editingIndex === null) {
+            return
+        }
+
+        const didUpdate = props.onUpdateIngredient(editingIndex, editingValue)
+
+        if (didUpdate) {
+            stopEditing()
+        }
+    }
+
     const ingredientsListItems = props.ingredients.map((ingredient, index) => (
         <li key={`${ingredient}-${index}`}>
-            <span>{ingredient}</span>
+            {editingIndex === index ? (
+                <input
+                    className="ingredient-inline-input"
+                    type="text"
+                    value={editingValue}
+                    onChange={event => setEditingValue(event.target.value)}
+                    onBlur={saveEditing}
+                    onKeyDown={event => {
+                        if (event.key === "Enter") {
+                            event.preventDefault()
+                            saveEditing()
+                        }
+
+                        if (event.key === "Escape") {
+                            stopEditing()
+                        }
+                    }}
+                    autoFocus
+                    aria-label={`Edit ${ingredient}`}
+                />
+            ) : (
+                <button
+                    className="ingredient-edit-trigger"
+                    onClick={() => startEditing(index, ingredient)}
+                    type="button"
+                >
+                    {ingredient}
+                </button>
+            )}
             <button
                 className="remove-ingredient-button"
                 onClick={() => props.onRemoveIngredient(index)}

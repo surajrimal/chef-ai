@@ -31,7 +31,7 @@ export default function ClaudeRecipe(props) {
                     </button>
                 </div>
             </div>
-            <div ref={recipeContentRef}>
+            <div ref={recipeContentRef} className="recipe-content">
                 {props.isLoading ? (
                     <p>Generating your recipe...</p>
                 ) : props.error ? (

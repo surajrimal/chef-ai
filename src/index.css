@@ -22,6 +22,7 @@ body {
         radial-gradient(circle at 90% 10%, rgba(95, 127, 78, 0.18), transparent 22%),
         linear-gradient(180deg, #fbf3e6 0%, var(--page-bg) 45%, #f7f1e7 100%);
     color: var(--ink);
+    overflow-x: hidden;
 }
 
 .site-header {
@@ -502,28 +503,51 @@ ul.ingredients-list > li {
 }
 
 @media (max-width: 760px) {
+    body {
+        background:
+            radial-gradient(circle at 50% -10%, rgba(207, 112, 76, 0.22), transparent 34%),
+            radial-gradient(circle at 100% 16%, rgba(102, 122, 87, 0.18), transparent 28%),
+            linear-gradient(180deg, #fbf4e8 0%, #f3e8d8 52%, #f6efe5 100%);
+    }
+
     .site-header {
-        padding: 16px;
-        gap: 10px;
+        justify-content: flex-start;
+        gap: 12px;
+        padding: 18px 18px 16px;
+        border-bottom-left-radius: 22px;
+        border-bottom-right-radius: 22px;
+        margin: 0 10px;
+        background:
+            linear-gradient(135deg, rgba(255, 253, 248, 0.94), rgba(252, 243, 230, 0.88));
+        box-shadow: 0 18px 30px rgba(67, 45, 26, 0.08);
     }
 
     .site-header-image {
-        width: 44px;
-        height: 44px;
+        width: 42px;
+        height: 42px;
+        padding: 4px;
+        border-radius: 14px;
+        background: rgba(255, 250, 244, 0.78);
+        box-shadow: 0 10px 18px rgba(94, 66, 43, 0.08);
     }
 
     .site-header h1 {
-        font-size: 1.6rem;
+        font-size: 1.4rem;
+        line-height: 1.05;
     }
 
     main {
-        padding: 22px 18px 14px;
+        padding: 18px 14px 18px;
     }
 
     .add-ingredient-form {
         flex-direction: column;
-        height: auto;
+        gap: 14px;
         padding: 16px;
+        border-radius: 24px;
+        background:
+            linear-gradient(180deg, rgba(255, 251, 246, 0.92), rgba(248, 239, 227, 0.94));
+        box-shadow: 0 20px 34px rgba(91, 63, 40, 0.1);
     }
 
     .ingredient-input-shell,
@@ -533,9 +557,55 @@ ul.ingredients-list > li {
         width: 100%;
     }
 
+    .ingredient-input-shell > input {
+        min-height: 54px;
+        padding: 15px 16px;
+        font-size: 1rem;
+        border-radius: 18px;
+    }
+
+    .ingredient-suggestions {
+        top: calc(100% + 8px);
+        border-radius: 16px;
+        padding: 8px;
+        max-height: min(280px, 48vh);
+        overflow-y: auto;
+        box-shadow: 0 18px 28px rgba(75, 51, 33, 0.14);
+    }
+
+    .ingredient-suggestion {
+        min-height: 46px;
+        padding: 12px 12px;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .add-ingredient-button {
+        min-height: 54px;
+        border-radius: 18px;
+        justify-content: space-between;
+        padding: 0 18px;
+        font-size: 0.98rem;
+        box-shadow: 0 18px 26px rgba(40, 28, 19, 0.2);
+    }
+
+    .add-ingredient-button-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 1.05rem;
+    }
+
+    .ingredient-message {
+        margin-top: 10px;
+        padding: 0 6px;
+        font-size: 0.92rem;
+    }
+
     .recipe-layout {
         grid-template-columns: 1fr;
-        gap: 18px;
+        gap: 16px;
+        margin-top: 20px;
     }
 
     .recipe-layout-sidebar {
@@ -543,7 +613,9 @@ ul.ingredients-list > li {
     }
 
     .ingredients-panel {
-        padding: 20px 18px;
+        padding: 20px 18px 18px;
+        border-radius: 24px;
+        box-shadow: 0 18px 28px rgba(95, 67, 45, 0.08);
     }
 
     .get-recipe-container {
@@ -551,18 +623,137 @@ ul.ingredients-list > li {
         align-items: flex-start;
         gap: 12px;
         padding: 16px 18px;
+        border-radius: 20px;
+    }
+
+    .get-recipe-container button,
+    .clear-list-button,
+    .save-recipe-button,
+    .hide-recipe-button {
+        width: 100%;
+        min-height: 48px;
+        justify-content: center;
+    }
+
+    ul.ingredients-list {
+        padding-left: 0;
+        margin-bottom: 22px;
+    }
+
+    ul.ingredients-list > li {
+        align-items: flex-start;
+        gap: 10px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(136, 101, 69, 0.12);
+    }
+
+    ul.ingredients-list > li:last-child {
+        border-bottom: none;
+    }
+
+    ul.ingredients-list > li > span {
+        flex: 1;
+        min-width: 0;
+        line-height: 1.55;
+        overflow-wrap: anywhere;
+    }
+
+    .remove-ingredient-button {
+        flex-shrink: 0;
+        min-height: 36px;
+        padding: 7px 12px;
     }
 
     .recipe-header {
         flex-direction: column;
+        gap: 14px;
+        margin-bottom: 18px;
     }
 
     .recipe-header-actions {
         width: 100%;
-        justify-content: flex-start;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
     }
 
     .suggested-recipe-container {
-        padding: 26px 22px;
+        padding: 22px 18px 24px;
+        border-radius: 26px;
+        font-size: 1rem;
+        line-height: 1.7;
+        box-shadow: 0 22px 34px rgba(95, 67, 45, 0.09);
+    }
+
+    .suggested-recipe-container h2 {
+        font-size: 1.65rem;
+        line-height: 1.08;
+    }
+
+    .suggested-recipe-container h3,
+    .suggested-recipe-container h4 {
+        margin-top: 20px;
+    }
+
+    .suggested-recipe-container table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        border-radius: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-header {
+        margin: 0 8px;
+        padding: 16px 16px 14px;
+    }
+
+    .site-header h1 {
+        font-size: 1.28rem;
+    }
+
+    main {
+        padding: 16px 12px 20px;
+    }
+
+    .panel-eyebrow {
+        font-size: 0.76rem;
+        letter-spacing: 0.1em;
+    }
+
+    .panel-heading h2,
+    .suggested-recipe-container h2 {
+        max-width: 12ch;
+    }
+
+    .ingredients-panel,
+    .suggested-recipe-container,
+    .add-ingredient-form {
+        border-radius: 22px;
+    }
+
+    .get-recipe-container {
+        padding: 15px 16px;
+    }
+
+    .get-recipe-container h3 {
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.35;
+    }
+
+    .get-recipe-container p,
+    .recipe-hint,
+    .ingredient-message {
+        font-size: 0.9rem;
+    }
+
+    .suggested-recipe-container {
+        padding: 20px 16px 22px;
+    }
+
+    .suggested-recipe-container blockquote {
+        padding: 10px 12px;
     }
 }

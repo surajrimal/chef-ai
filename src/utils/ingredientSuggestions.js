@@ -5,6 +5,7 @@ export const COMMON_INGREDIENT_SUGGESTIONS = [
   // Aromatics & Vegetables
   "Garlic",
   "Ginger",
+  "Onions",
   "Yellow onion",
   "Red onion",
   "Shallots",

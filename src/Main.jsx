@@ -1,9 +1,12 @@
 import React from "react"
 import IngredientsList from "./components/IngredientsList"
 import ClaudeRecipe from "./components/ClaudeRecipe"
+import AddIngredientForm from "./components/AddIngredientForm"
 import { getRecipeFromMistral } from "./ai"
 
 const VALID_INGREDIENT_PATTERN = /^[a-z0-9][a-z0-9 &'()/%.+-]*$/i
+const MESSAGE_DISMISS_DELAY_MS = 2200
+const MESSAGE_FADE_DURATION_MS = 260
 
 function normalizeIngredient(value) {
     return value.trim().replace(/\s+/g, " ")
@@ -27,7 +30,33 @@ export default function Main() {
     const [isLoadingRecipe, setIsLoadingRecipe] = React.useState(false)
     const [ingredientMessage, setIngredientMessage] = React.useState("")
     const [ingredientMessageType, setIngredientMessageType] = React.useState("info")
-    const formRef = React.useRef(null)
+    const [isIngredientMessageVisible, setIsIngredientMessageVisible] = React.useState(false)
+
+    React.useEffect(() => {
+        if (!ingredientMessage) {
+            setIsIngredientMessageVisible(false)
+            return undefined
+        }
+
+        setIsIngredientMessageVisible(true)
+
+        if (ingredientMessageType === "error") {
+            return undefined
+        }
+
+        const fadeTimer = window.setTimeout(() => {
+            setIsIngredientMessageVisible(false)
+        }, MESSAGE_DISMISS_DELAY_MS)
+
+        const clearTimer = window.setTimeout(() => {
+            setIngredientMessage("")
+        }, MESSAGE_DISMISS_DELAY_MS + MESSAGE_FADE_DURATION_MS)
+
+        return () => {
+            window.clearTimeout(fadeTimer)
+            window.clearTimeout(clearTimer)
+        }
+    }, [ingredientMessage, ingredientMessageType])
 
     async function getRecipe() {
 
@@ -48,16 +77,16 @@ export default function Main() {
         setRecipeShown(false)
     }
 
-    function addIngredient(formData) {
-        const rawInput = formData.get("ingredient")
-
+    function addIngredient(rawInput) {
         if (typeof rawInput !== "string") {
             setIngredientMessageType("error")
             setIngredientMessage("Please enter at least one valid ingredient or instruction.")
-            return
+            return false
         }
 
-        const candidates = rawInput
+        const normalizedInput = rawInput.trim()
+
+        const candidates = normalizedInput
             .split(",")
             .map(normalizeIngredient)
             .filter(Boolean)
@@ -65,7 +94,7 @@ export default function Main() {
         if (candidates.length === 0) {
             setIngredientMessageType("error")
             setIngredientMessage("Please enter at least one valid ingredient or instruction.")
-            return
+            return false
         }
 
         const invalidEntries = candidates.filter(candidate => !isValidIngredient(candidate))
@@ -73,7 +102,7 @@ export default function Main() {
         if (invalidEntries.length > 0) {
             setIngredientMessageType("error")
             setIngredientMessage(`"${invalidEntries[0]}" is not a valid entry. Use words, numbers, and simple cooking punctuation only.`)
-            return
+            return false
         }
 
         const existingKeys = new Set(ingredients.map(getIngredientKey))
@@ -97,20 +126,20 @@ export default function Main() {
         if (addedCount === 0) {
             setIngredientMessageType("error")
             setIngredientMessage("That item is already in your list.")
-            return
+            return false
         }
 
         setIngredients(nextIngredients)
-        formRef.current?.reset()
 
         if (duplicateCount > 0) {
             setIngredientMessageType("info")
             setIngredientMessage(`Added ${addedCount} item${addedCount === 1 ? "" : "s"}. Skipped ${duplicateCount} duplicate${duplicateCount === 1 ? "" : "s"}.`)
-            return
+            return true
         }
 
         setIngredientMessageType("success")
         setIngredientMessage(`Added ${addedCount} item${addedCount === 1 ? "" : "s"}.`)
+        return true
     }
 
     function removeIngredient(indexToRemove) {
@@ -130,17 +159,12 @@ export default function Main() {
 
     return (
         <main>
-            <form ref={formRef} action={addIngredient} className="add-ingredient-form">
-                <input
-                    type="text"
-                    placeholder="e.g. tomatoes, garlic, simmer for 10 minutes"
-                    aria-label="Add ingredients or instructions"
-                    name="ingredient"
-                />
-                <button>Add Item</button>
-            </form>
+            <AddIngredientForm ingredients={ingredients} onAddIngredient={addIngredient} />
             {ingredientMessage && (
-                <p className={`ingredient-message ingredient-message-${ingredientMessageType}`} aria-live="polite">
+                <p
+                    className={`ingredient-message ingredient-message-${ingredientMessageType}${isIngredientMessageVisible ? " ingredient-message-visible" : ""}`}
+                    aria-live="polite"
+                >
                     {ingredientMessage}
                 </p>
             )}

@@ -56,6 +56,7 @@ main {
 .add-ingredient-form {
     display: flex;
     justify-content: center;
+    align-items: flex-start;
     gap: 12px;
     min-height: 48px;
     padding: 18px;
@@ -65,32 +66,110 @@ main {
     box-shadow: 0 24px 48px rgba(91, 63, 40, 0.08);
 }
 
-.add-ingredient-form > input {
+.ingredient-input-shell {
+    position: relative;
+    flex-grow: 1;
+    min-width: 150px;
+    max-width: 520px;
+}
+
+.ingredient-input-shell > input {
     border-radius: 16px;
     border: 1px solid #d9ccbc;
     padding: 13px 16px;
     box-shadow: 0 12px 30px rgba(100, 72, 46, 0.06);
-    flex-grow: 1;
-    min-width: 150px;
-    max-width: 520px;
     background: var(--surface-strong);
+    width: 100%;
 }
 
-.add-ingredient-form > button {
+.ingredient-input-shell > input:focus-visible {
+    outline: 2px solid rgba(203, 100, 57, 0.4);
+    outline-offset: 2px;
+}
+
+.ingredient-suggestions {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: grid;
+    gap: 6px;
+    padding: 10px;
+    border: 1px solid rgba(136, 101, 69, 0.12);
+    border-radius: 18px;
+    background: rgba(255, 252, 247, 0.98);
+    box-shadow: 0 18px 40px rgba(75, 51, 33, 0.16);
+}
+
+.ingredient-suggestion {
+    border: none;
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: transparent;
+    color: #332821;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+    transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.ingredient-suggestion:hover,
+.ingredient-suggestion-active {
+    background: linear-gradient(135deg, rgba(207, 112, 76, 0.14), rgba(102, 122, 87, 0.16));
+    color: #171311;
+    transform: translateY(-1px);
+}
+
+.add-ingredient-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     font-family: Inter, sans-serif;
+    padding: 0 20px;
+    min-height: 50px;
+    min-width: 176px;
     border-radius: 16px;
     border: none;
-    background: linear-gradient(135deg, #191410, #3a2a21);
+    background: linear-gradient(135deg, #17120f 0%, #39271f 52%, #a14f2e 100%);
     color: #FAFAF8;
-    width: 170px;
     font-size: 0.92rem;
     font-weight: 600;
+    letter-spacing: 0.01em;
     box-shadow: 0 18px 30px rgba(40, 28, 19, 0.18);
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
-.add-ingredient-form > button::before {
-    content: "+";
-    margin-right: 5px;
+.add-ingredient-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 22px 34px rgba(40, 28, 19, 0.24);
+    filter: saturate(1.05) brightness(1.03);
+}
+
+.add-ingredient-button:active {
+    transform: translateY(0);
+    box-shadow: 0 10px 18px rgba(40, 28, 19, 0.18);
+}
+
+.add-ingredient-button:focus-visible {
+    outline: 2px solid rgba(203, 100, 57, 0.45);
+    outline-offset: 3px;
+}
+
+.add-ingredient-button-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: rgba(255, 250, 245, 0.14);
+    border: 1px solid rgba(255, 250, 245, 0.2);
+    font-size: 1rem;
+    line-height: 1;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .ingredient-message {
@@ -98,6 +177,14 @@ main {
     max-width: 702px;
     font-size: 0.95rem;
     line-height: 1.5;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.26s ease, transform 0.26s ease;
+}
+
+.ingredient-message-visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .ingredient-message-error {
@@ -439,8 +526,9 @@ ul.ingredients-list > li {
         padding: 16px;
     }
 
-    .add-ingredient-form > input,
-    .add-ingredient-form > button {
+    .ingredient-input-shell,
+    .ingredient-input-shell > input,
+    .add-ingredient-button {
         max-width: none;
         width: 100%;
     }

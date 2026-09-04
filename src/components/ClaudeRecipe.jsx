@@ -1,9 +1,9 @@
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { useRef } from "react"
-import printReceipe from "./PrintReceipe"
+import printRecipe from "./printRecipe"
 
-export default function ClaudeRecipe(props) {
+export default function ClaudeRecipe({ recipe, error, isLoading, ingredients, onHideRecipe }) {
     const recipeContentRef = useRef(null)
 
     return (
@@ -14,11 +14,11 @@ export default function ClaudeRecipe(props) {
                     <h2>Recommended Recipe</h2>
                 </div>
                 <div className="recipe-header-actions">
-                    {props.recipe && !props.error && !props.isLoading && (
+                    {recipe && !error && !isLoading && (
                         <button
                             className="save-recipe-button"
-                            onClick={() => printReceipe({
-                                ingredients: props.ingredients,
+                            onClick={() => printRecipe({
+                                ingredients,
                                 recipeHtml: recipeContentRef.current?.innerHTML ?? "",
                             })}
                             type="button"
@@ -26,19 +26,19 @@ export default function ClaudeRecipe(props) {
                             Print Recipe
                         </button>
                     )}
-                    <button className="hide-recipe-button" onClick={props.onHideRecipe} type="button">
+                    <button className="hide-recipe-button" onClick={onHideRecipe} type="button">
                         Hide Recipe
                     </button>
                 </div>
             </div>
             <div ref={recipeContentRef} className="recipe-content">
-                {props.isLoading ? (
+                {isLoading ? (
                     <p>Generating your recipe...</p>
-                ) : props.error ? (
-                    <p>{props.error}</p>
-                ) : props.recipe ? (
+                ) : error ? (
+                    <p>{error}</p>
+                ) : recipe ? (
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {props.recipe}
+                        {recipe}
                     </ReactMarkdown>
                 ) : (
                     <p>Add at least 3 ingredients or instructions, then click "Generate Recipe."</p>

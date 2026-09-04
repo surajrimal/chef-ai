@@ -4,21 +4,21 @@ import {
     getMatchingSuggestions
 } from "../utils/ingredientSuggestions"
 
-export default function AddIngredientForm(props) {
+export default function AddIngredientForm({ ingredients, onAddIngredient }) {
     const [ingredientInput, setIngredientInput] = React.useState("")
     const [showSuggestions, setShowSuggestions] = React.useState(false)
     const [highlightedSuggestion, setHighlightedSuggestion] = React.useState(0)
     const inputRef = React.useRef(null)
 
     const suggestions = React.useMemo(
-        () => getMatchingSuggestions({ inputValue: ingredientInput, ingredients: props.ingredients }),
-        [ingredientInput, props.ingredients]
+        () => getMatchingSuggestions({ inputValue: ingredientInput, ingredients }),
+        [ingredientInput, ingredients]
     )
 
     function handleSubmit(event) {
         event.preventDefault()
 
-        const didAddItem = props.onAddIngredient(ingredientInput)
+        const didAddItem = onAddIngredient(ingredientInput)
 
         if (didAddItem) {
             setIngredientInput("")

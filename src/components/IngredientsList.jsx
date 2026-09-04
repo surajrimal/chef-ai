@@ -1,6 +1,14 @@
 import React from "react"
+import { MINIMUM_INGREDIENTS_FOR_RECIPE } from "../constants/recipe"
 
-export default function IngredientsList(props) {
+export default function IngredientsList({
+    ingredients,
+    onUpdateIngredient,
+    onRemoveIngredient,
+    onRemoveAllIngredients,
+    getRecipe,
+    recipeShown,
+}) {
     const [editingIndex, setEditingIndex] = React.useState(null)
     const [editingValue, setEditingValue] = React.useState("")
 
@@ -19,14 +27,14 @@ export default function IngredientsList(props) {
             return
         }
 
-        const didUpdate = props.onUpdateIngredient(editingIndex, editingValue)
+        const didUpdate = onUpdateIngredient(editingIndex, editingValue)
 
         if (didUpdate) {
             stopEditing()
         }
     }
 
-    const ingredientsListItems = props.ingredients.map((ingredient, index) => (
+    const ingredientsListItems = ingredients.map((ingredient, index) => (
         <li key={`${ingredient}-${index}`}>
             {editingIndex === index ? (
                 <input
@@ -59,7 +67,7 @@ export default function IngredientsList(props) {
             )}
             <button
                 className="remove-ingredient-button"
-                onClick={() => props.onRemoveIngredient(index)}
+                onClick={() => onRemoveIngredient(index)}
                 aria-label={`Remove ${ingredient}`}
                 title={`Remove ${ingredient}`}
                 type="button"
@@ -69,26 +77,26 @@ export default function IngredientsList(props) {
         </li>
     ))
     return (
-        <section className={`ingredients-panel${props.recipeShown ? " ingredients-panel-compact" : ""}`}>
+        <section className={`ingredients-panel${recipeShown ? " ingredients-panel-compact" : ""}`}>
             <div className="panel-heading">
                 <p className="panel-eyebrow">Kitchen Notes</p>
                 <h2>Your ingredients and instructions</h2>
             </div>
             <ul className="ingredients-list" aria-live="polite">{ingredientsListItems}</ul>
-            {props.ingredients.length < 3 && (
+            {ingredients.length < MINIMUM_INGREDIENTS_FOR_RECIPE && (
                 <p className="recipe-hint">Add at least 3 ingredients or instructions before generating a recipe.</p>
             )}
             <div className="ingredients-panel-actions">
-                <button className="clear-list-button" onClick={props.onRemoveAllIngredients} type="button">
+                <button className="clear-list-button" onClick={onRemoveAllIngredients} type="button">
                     Clear List
                 </button>
             </div>
-            {props.ingredients.length > 2 && <div className="get-recipe-container">
+            {ingredients.length >= MINIMUM_INGREDIENTS_FOR_RECIPE && <div className="get-recipe-container">
                 <div>
-                    <h3>{props.recipeShown ? "Want another version?" : "Ready for a recipe?"}</h3>
+                    <h3>{recipeShown ? "Want another version?" : "Ready for a recipe?"}</h3>
                     <p>Use your ingredients and instructions to generate a recipe suggestion.</p>
                 </div>
-                <button onClick={props.getRecipe}> {props.recipeShown ? "Generate Again" : "Generate Recipe"}</button>
+                <button onClick={getRecipe}> {recipeShown ? "Generate Again" : "Generate Recipe"}</button>
             </div>}
         </section>
     )

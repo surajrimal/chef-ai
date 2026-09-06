@@ -4,7 +4,7 @@ import {
     getMatchingSuggestions
 } from "../utils/ingredientSuggestions"
 
-export default function AddIngredientForm({ ingredients, onAddIngredient }) {
+export default function AddIngredientForm({ ingredients, onAddIngredient, recommendedIngredients = [] }) {
     const [ingredientInput, setIngredientInput] = React.useState("")
     const [showSuggestions, setShowSuggestions] = React.useState(false)
     const [highlightedSuggestion, setHighlightedSuggestion] = React.useState(0)
@@ -106,6 +106,23 @@ export default function AddIngredientForm({ ingredients, onAddIngredient }) {
                                 {suggestion}
                             </button>
                         ))}
+                    </div>
+                )}
+                {recommendedIngredients.filter(ingredient => !ingredients.some(current => current.toLowerCase() === ingredient.toLowerCase())).length > 0 && (
+                    <div className="history-recommendations" aria-label="Recommended from your history">
+                        <span className="history-recommendations-label">From your history</span>
+                        {recommendedIngredients
+                            .filter(ingredient => !ingredients.some(current => current.toLowerCase() === ingredient.toLowerCase()))
+                            .map(ingredient => (
+                                <button
+                                    className="history-recommendation"
+                                    key={ingredient}
+                                    type="button"
+                                    onClick={() => onAddIngredient(ingredient)}
+                                >
+                                    + {ingredient}
+                                </button>
+                            ))}
                     </div>
                 )}
             </div>

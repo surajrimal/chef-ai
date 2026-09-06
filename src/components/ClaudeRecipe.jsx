@@ -1,9 +1,9 @@
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { useRef } from "react"
-import printRecipe from "./printRecipe"
+import printRecipe, { getRecipeHistoryId, getRecipeMarkup } from "./printRecipe"
 
-export default function ClaudeRecipe({ recipe, error, isLoading, ingredients, onHideRecipe }) {
+export default function ClaudeRecipe({ recipe, error, isLoading, ingredients, onHideRecipe, onSaveRecipe, saveStatus, saveMessage }) {
     const recipeContentRef = useRef(null)
 
     return (
@@ -15,17 +15,28 @@ export default function ClaudeRecipe({ recipe, error, isLoading, ingredients, on
                 </div>
                 <div className="recipe-header-actions">
                     {recipe && !error && !isLoading && (
-                        <button
-                            className="save-recipe-button"
-                            onClick={() => printRecipe({
+                        <>
+                            <button
+                                className={`save-recipe-button${saveStatus === "saved" ? " save-recipe-button-saved" : ""}`}
+                                onClick={() => {
+                                const recipeHtml = recipeContentRef.current?.innerHTML ?? ""
+                                const markup = getRecipeMarkup({ ingredients, recipeHtml })
+                                onSaveRecipe(getRecipeHistoryId(markup), markup, ingredients)
+                                }}
+                                disabled={saveStatus === "saving"}
+                                type="button"
+                            >
+                                {saveStatus === "saving" ? "Saving..." : saveStatus === "saved" ? "Saved" : "Save Recipe"}
+                            </button>
+                            <button className="print-recipe-button" onClick={() => printRecipe({
                                 ingredients,
                                 recipeHtml: recipeContentRef.current?.innerHTML ?? "",
-                            })}
-                            type="button"
-                        >
-                            Print Recipe
-                        </button>
+                            })} type="button">
+                                Print Recipe
+                            </button>
+                        </>
                     )}
+                    {saveMessage && <p className={`save-recipe-status save-recipe-status-${saveStatus}`} role="status">{saveMessage}</p>}
                     <button className="hide-recipe-button" onClick={onHideRecipe} type="button">
                         Hide Recipe
                     </button>

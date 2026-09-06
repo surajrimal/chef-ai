@@ -1,6 +1,8 @@
 import chefClaudeLogo from "./assets/hero.png"
 
-export default function Header({ user, onLogout }) {
+export default function Header({ user, onLogout, onAccount }) {
+    const displayName = [user?.firstname, user?.lastname].filter(Boolean).join(" ") || user?.name || "Chef AI member"
+
     return (
         <header className="site-header">
             <img src={chefClaudeLogo} alt="Chef AI logo" className="site-header-image" />
@@ -9,7 +11,8 @@ export default function Header({ user, onLogout }) {
                 <p>Type what you have in your kitchen, and Chef AI will turn it into a recipe.</p>
             </div>
             {user && <div className="account-actions">
-                <span className="account-email">{user.name || user.email}</span>
+                <span className="account-email">{displayName}</span>
+                <button type="button" onClick={onAccount}>Account</button>
                 <button type="button" onClick={onLogout}>Sign out</button>
             </div>}
         </header>

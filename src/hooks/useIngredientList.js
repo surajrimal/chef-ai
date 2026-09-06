@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { DEFAULT_INGREDIENTS } from "../constants/recipe"
 
 const VALID_INGREDIENT_PATTERN = /^[a-z0-9][a-z0-9 &'()/%.+-]*$/i
@@ -115,5 +115,9 @@ export function useIngredientList({ showNotice }) {
     setIngredients([])
   }
 
-  return { ingredients, addIngredients, updateIngredient, removeIngredient, clearIngredients }
+  const replaceIngredients = useCallback(nextIngredients => {
+    setIngredients(nextIngredients)
+  }, [])
+
+  return { ingredients, addIngredients, updateIngredient, removeIngredient, clearIngredients, replaceIngredients }
 }

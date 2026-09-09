@@ -1,6 +1,7 @@
 # Chef AI
 
 Chef AI is a small React + Vite app that turns a short ingredient list into a recipe suggestion using an LLM. You add ingredients, remove what you do not want, and generate a markdown-formatted recipe rendered directly in the UI.
+https://chef-ai-8858.vercel.app/
 
 ## Features
 

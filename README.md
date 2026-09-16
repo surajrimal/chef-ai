@@ -44,7 +44,7 @@ HF_ACCESS_TOKEN=your_hugging_face_token
 
 Notes:
 
-- `HF_ACCESS_TOKEN` is read only by the Vercel serverless function in [`api/recipe.js`](/Users/suraj/CCI/chef-ai-auth/chef-ai/api/recipe.js).
+- `HF_ACCESS_TOKEN` is read only by the Vercel serverless function in [`api/recipe.js`](/api/recipe.js).
 - Do not prefix private secrets with `VITE_`; Vite injects those into the browser bundle.
 - For Vercel, add `HF_ACCESS_TOKEN` in Project Settings -> Environment Variables instead of committing it to the repo.
 

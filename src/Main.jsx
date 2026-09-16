@@ -4,13 +4,15 @@ import ClaudeRecipe from "./components/ClaudeRecipe"
 import IngredientsList from "./components/IngredientsList"
 import SavedRecipes from "./components/SavedRecipes"
 import { deleteRecipeHistory, getSavedRecipes, saveRecipeHistory } from "./auth"
+import { DEFAULT_RECOMMENDATIONS } from "./constants/recipe"
 import { useIngredientList } from "./hooks/useIngredientList"
 import { useIngredientNotice } from "./hooks/useIngredientNotice"
 import { useRecipeGeneration } from "./hooks/useRecipeGeneration"
 
 export default function Main({ onSessionExpired }) {
   const [savedRecipes, setSavedRecipes] = useState([])
-  const [recommendedIngredients, setRecommendedIngredients] = useState([])
+  const [recommendedIngredients, setRecommendedIngredients] = useState(DEFAULT_RECOMMENDATIONS)
+  const [hasHistory, setHasHistory] = useState(false)
   const [historyError, setHistoryError] = useState("")
   const [saveState, setSaveState] = useState({ status: "idle", message: "" })
   const { notice, isVisible, showNotice, clearNotice } = useIngredientNotice()
@@ -30,7 +32,7 @@ export default function Main({ onSessionExpired }) {
     }
   }
 
-  function getFrequentIngredients(recipes, limit = 6) {
+  function getFrequentIngredients(recipes, limit = 15) {
     const counts = new Map()
     const labels = new Map()
 
@@ -61,8 +63,11 @@ export default function Main({ onSessionExpired }) {
         setHistoryError("")
         const frequentIngredients = getFrequentIngredients(recipes)
         if (frequentIngredients.length > 0) {
-          replaceIngredients(frequentIngredients.slice(0, 3))
-          setRecommendedIngredients(frequentIngredients.slice(3))
+          setRecommendedIngredients(frequentIngredients)
+          setHasHistory(true)
+        } else {
+          setRecommendedIngredients(DEFAULT_RECOMMENDATIONS)
+          setHasHistory(false)
         }
       })
       .catch(error => {
@@ -111,6 +116,7 @@ export default function Main({ onSessionExpired }) {
     onRemoveAllIngredients: clearWorkspace,
     getRecipe: generateRecipe,
     recipeShown: recipe.isShown,
+    isLoading: recipe.isLoading,
   }
 
   return (
@@ -119,6 +125,7 @@ export default function Main({ onSessionExpired }) {
         ingredients={ingredients}
         onAddIngredient={addIngredients}
         recommendedIngredients={recommendedIngredients}
+        hasHistory={hasHistory}
       />
       {notice && (
         <p
@@ -149,7 +156,13 @@ export default function Main({ onSessionExpired }) {
         </section>
       ) : ingredients.length > 0 ? (
         <IngredientsList {...ingredientListProps} />
-      ) : null}
+      ) : (
+        <div className="empty-state">
+          <p className="panel-eyebrow">Get started</p>
+          <h2>What's in your kitchen?</h2>
+          <p>Add ingredients above — or pick from the suggestions — and Chef AI will build a recipe around them.</p>
+        </div>
+      )}
       <SavedRecipes recipes={savedRecipes} error={historyError} onDeleteRecipe={deleteRecipe} />
     </main>
   )

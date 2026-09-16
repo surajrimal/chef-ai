@@ -8,6 +8,7 @@ export default function IngredientsList({
     onRemoveAllIngredients,
     getRecipe,
     recipeShown,
+    isLoading = false,
 }) {
     const [editingIndex, setEditingIndex] = React.useState(null)
     const [editingValue, setEditingValue] = React.useState("")
@@ -33,6 +34,15 @@ export default function IngredientsList({
             stopEditing()
         }
     }
+
+    function handleClearList() {
+        if (window.confirm("Clear all ingredients? This cannot be undone.")) {
+            onRemoveAllIngredients()
+        }
+    }
+
+    const remainingCount = MINIMUM_INGREDIENTS_FOR_RECIPE - ingredients.length
+    const isReady = ingredients.length >= MINIMUM_INGREDIENTS_FOR_RECIPE
 
     const ingredientsListItems = ingredients.map((ingredient, index) => (
         <li key={`${ingredient}-${index}`}>
@@ -76,28 +86,40 @@ export default function IngredientsList({
             </button>
         </li>
     ))
+
     return (
         <section className={`ingredients-panel${recipeShown ? " ingredients-panel-compact" : ""}`}>
             <div className="panel-heading">
                 <p className="panel-eyebrow">Kitchen Notes</p>
                 <h2>Your ingredients and instructions</h2>
             </div>
+            <div className="ingredient-count-bar">
+                <span className="ingredient-count-text">
+                    {ingredients.length} {ingredients.length === 1 ? "item" : "items"}
+                </span>
+                {isReady ? (
+                    <span className="ingredient-count-ready">Ready to generate</span>
+                ) : (
+                    <span className="ingredient-count-hint">{remainingCount} more needed</span>
+                )}
+            </div>
             <ul className="ingredients-list" aria-live="polite">{ingredientsListItems}</ul>
-            {ingredients.length < MINIMUM_INGREDIENTS_FOR_RECIPE && (
-                <p className="recipe-hint">Add at least 3 ingredients or instructions before generating a recipe.</p>
-            )}
             <div className="ingredients-panel-actions">
-                <button className="clear-list-button" onClick={onRemoveAllIngredients} type="button">
+                <button className="clear-list-button" onClick={handleClearList} type="button">
                     Clear List
                 </button>
             </div>
-            {ingredients.length >= MINIMUM_INGREDIENTS_FOR_RECIPE && <div className="get-recipe-container">
-                <div>
-                    <h3>{recipeShown ? "Want another version?" : "Ready for a recipe?"}</h3>
-                    <p>Use your ingredients and instructions to generate a recipe suggestion.</p>
+            {isReady && (
+                <div className="get-recipe-container">
+                    <div>
+                        <h3>{recipeShown ? "Want another version?" : "Ready for a recipe?"}</h3>
+                        <p>Use your ingredients and instructions to generate a recipe suggestion.</p>
+                    </div>
+                    <button onClick={getRecipe} disabled={isLoading}>
+                        {isLoading ? "Generating..." : recipeShown ? "Generate Again" : "Generate Recipe"}
+                    </button>
                 </div>
-                <button onClick={getRecipe}> {recipeShown ? "Generate Again" : "Generate Recipe"}</button>
-            </div>}
+            )}
         </section>
     )
 }

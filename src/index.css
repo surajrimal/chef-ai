@@ -424,6 +424,7 @@ main {
     font: inherit;
     font-size: 0.82rem;
     cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease, opacity 0.2s ease, transform 0.2s ease;
 }
 
 .history-recommendation:hover {
@@ -637,6 +638,50 @@ ul.ingredients-list > li {
     font-size: 0.95rem;
 }
 
+.ingredient-count-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0 14px;
+    font-size: 0.82rem;
+}
+
+.ingredient-count-text {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.ingredient-count-ready {
+    color: #3f5c35;
+    font-weight: 700;
+}
+
+.ingredient-count-hint {
+    color: var(--muted);
+}
+
+.empty-state {
+    margin-top: 28px;
+    padding: 40px 32px;
+    border: 1.5px dashed rgba(136, 101, 69, 0.22);
+    border-radius: 26px;
+    text-align: center;
+    background: rgba(255, 253, 248, 0.55);
+}
+
+.empty-state h2 {
+    margin: 6px 0 12px;
+    font-size: 1.65rem;
+    color: #181512;
+}
+
+.empty-state > p:last-child {
+    margin: 0 auto;
+    max-width: 38rem;
+    color: var(--muted);
+    line-height: 1.55;
+}
+
 .ingredients-panel-actions {
     display: flex;
     justify-content: flex-start;
@@ -727,6 +772,12 @@ ul.ingredients-list > li {
     font-family: Inter, sans-serif;
     font-size: 0.9rem;
     cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.get-recipe-container button:disabled {
+    opacity: 0.6;
+    cursor: wait;
 }
 
 .suggested-recipe-container {
@@ -1392,6 +1443,19 @@ ul.ingredients-list > li {
         align-items: flex-start;
         flex-direction: column;
     }
+
+    .print-recipe-button {
+        display: none;
+    }
+
+    .empty-state {
+        padding: 30px 20px;
+        border-radius: 22px;
+    }
+
+    .empty-state h2 {
+        font-size: 1.35rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1413,6 +1477,10 @@ ul.ingredients-list > li {
     .site-header-copy p {
         font-size: 0.84rem;
         max-width: none;
+    }
+
+    .account-email {
+        display: none;
     }
 
     .recipe-header-actions {

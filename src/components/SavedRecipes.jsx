@@ -3,7 +3,14 @@ import { useState } from "react"
 
 function formatDate(value) {
   if (!value) return "Date unavailable"
-  const date = new Date(value)
+  // If the server sends a UTC timestamp without an explicit timezone marker
+  // (no trailing Z, no +HH:MM / -HH:MM offset), append Z so the browser
+  // parses it as UTC and toLocaleString() converts it to the user's local time.
+  const normalized =
+    typeof value === "string" && !value.endsWith("Z") && !/[+-]\d{2}:\d{2}$/.test(value)
+      ? `${value}Z`
+      : value
+  const date = new Date(normalized)
   return Number.isNaN(date.getTime()) ? "Date unavailable" : date.toLocaleString()
 }
 
